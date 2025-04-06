@@ -9,9 +9,7 @@ body {
   font-family: 'Jersey 25', sans-serif;
   font-weight: 100;
   margin: 0;
-  background-color: #414141;
+  background-color: #343434;
+  /* background-image: linear-gradient(to bottom, #171717 0%, #343434 60%, #474747 80%, #6d6d6d 100%); */
 }
 
-h3 {
-  font-weight: 200;
-}
