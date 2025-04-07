@@ -77,7 +77,6 @@ export default function LogIn() {
                         Registrate
                     </Link>
                 </div>
-
             </form>
             <button onClick={handleGoogleLogIn}>Iniciar sesión con Google</button>
         </div>
