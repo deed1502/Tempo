@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { app } from '../../credentials';
 import { Link, useNavigate } from "react-router-dom";
 import '../styles/logIn.css';
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function LogIn() {
     const [email, setEmail] = useState('');
@@ -33,6 +33,36 @@ export default function LogIn() {
         }
     };
 
+    const handleGoogleLogIn = async (e) => {
+        e.preventDefault();
+        setError(null);
+        try {
+            const googleProvider = new GoogleAuthProvider();
+            const userCredential = await signInWithPopup(auth, googleProvider);
+            const user = userCredential.user;
+            const userDocRef = doc(db, "users", user.uid);
+            const userDocSnap = await getDoc(userDocRef);
+
+            if (userDocSnap.exists()) {
+                const userData = userDocSnap.data();
+                console.log("Usuario encontrado:", userData.username);
+                navigate("/");
+            } else {
+                await setDoc(userDocRef, {
+                    name: user.displayName.split(' ')[0] || '', 
+                    lastName: user.displayName.split(' ')[1] || '', 
+                    username: user.displayName.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000), 
+                    email: user.email,
+                    profilePicture: user.photoURL,
+                });
+                console.log('Usuario registrado con Google');
+            }
+        } catch (err) {
+            setError(err.message);
+
+        }
+    };
+
     return (
         <div className="login-container">
             <form onSubmit={handleSubmit} className="login-form">
@@ -49,6 +79,7 @@ export default function LogIn() {
                 </div>
 
             </form>
+            <button onClick={handleGoogleLogIn}>Iniciar sesión con Google</button>
         </div>
     );
 }
