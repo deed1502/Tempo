@@ -3,6 +3,7 @@ import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvide
 import { app } from '../../credentials';
 import { Link, useNavigate } from "react-router-dom";
 import '../styles/logIn.css';
+import googleLogo from '../assets/google-logo.webp';
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function LogIn() {
@@ -49,9 +50,9 @@ export default function LogIn() {
                 navigate("/");
             } else {
                 await setDoc(userDocRef, {
-                    name: user.displayName.split(' ')[0] || '', 
-                    lastName: user.displayName.split(' ')[1] || '', 
-                    username: user.displayName.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000), 
+                    name: user.displayName.split(' ')[0] || '',
+                    lastName: user.displayName.split(' ')[1] || '',
+                    username: user.displayName.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000),
                     email: user.email,
                     profilePicture: user.photoURL,
                 });
@@ -70,7 +71,11 @@ export default function LogIn() {
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <button type="submit">Iniciar sesión</button>
+                <button className='inicio-sesion' type="submit">Iniciar sesión</button>
+                <button className='inicio-sesion-google' onClick={handleGoogleLogIn}>
+                    <img src={googleLogo} alt="Google Logo" className="google-logo" />
+                    Iniciar sesión con Google
+                </button>
                 <div className='register-div'>
                     <p>¿No tienes cuenta? </p>
                     <Link to="/register" className='register-button'>
@@ -78,7 +83,6 @@ export default function LogIn() {
                     </Link>
                 </div>
             </form>
-            <button onClick={handleGoogleLogIn}>Iniciar sesión con Google</button>
         </div>
     );
 }
